@@ -41,7 +41,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
                 height: 50,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(topRight: Radius.circular(30)),
-                  color: Color(0xFF232b2b),
+                  color: Color(0xFF000000),
                 ),
                 child: Align(
                   alignment: Alignment.centerLeft,
@@ -82,7 +82,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
                     borderRadius: BorderRadius.only(bottomLeft: Radius.circular(30))
                 ),
                 elevation: 10,
-                color: Color(0xFF232b2b),
+                color: Color(0xFF000000),
                 child: MaterialButton(
                     height: 50,
                     minWidth: 50,
@@ -93,30 +93,10 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
                     onPressed: (){
                       Navigator.push(context, SlideLeftRoute(page: enterPage));
                     },
-                    child: photoUrl != null ?
-                        CachedNetworkImage(
-                          imageUrl: photoUrl,
-                          imageBuilder: (context, imgProvider) => Container(
-                            height: 20.0,
-                            width: 20.0,
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                image: DecorationImage(
-                                    image: imgProvider,
-                                    fit: BoxFit.cover
-                                )
-                            ),
-                          ),
-                          placeholder: (context, val) =>
-                            Container(
-                              width: 20.0,
-                              height: 20.0,
-                              child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white,),
-                              ),
-                            ),
-                        )
-                        : child
+                    child: Image.asset('images/new_logo.png',
+                      width: 20.0,
+                      height: 20.0,
+                    ),
                 ),
               ),
             ),

@@ -234,178 +234,182 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: sKey,
-      body: Stack(
-        children: <Widget>[
-          Image.asset('images/login_back.jpg',
-            width: double.infinity,
-            height: double.infinity,
-            fit: BoxFit.cover,
-          ),
+      body: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints){
+          return Stack(
+            children: <Widget>[
+              Image.asset('images/back1.jpg',
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.cover,
+              ),
 
-          Container(
-            color: Color.fromRGBO(255, 255, 255, 0.1),
-          ),
-
-          Visibility(
-            visible: loading,
-            child: Center(
-              child: Container(
-                padding: EdgeInsets.only(top: MediaQuery.of(context).size.width / 2),
-                child: Column(
-                  children: <Widget>[
-                    FadeIn(
-                      delay: 1,
-                      child: Shimmer.fromColors(
-                        loop: 5,
-                        baseColor: Colors.white,
-                        highlightColor: Colors.black,
-                        child: ImageIcon(
-                          AssetImage('images/new_logo.png'),
-                          color: Colors.white,
-                          size: MediaQuery.of(context).size.width / 2,
-                        ),
-                      ),
-                    ),
-
-                    FadeIn(
-                      delay: 1,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 50.0, right: 10.0, top: 20),
-                        child: Shimmer.fromColors(
-                          baseColor: Colors.white,
-                          highlightColor: Colors.black,
-                          loop: 5,
-                          child: Row(
-                            children: <Widget>[
-                              Container(
-                                color: Colors.white,
-                                width: 90.0,
-                                height: 1.0,
+              Visibility(
+                  visible: loading,
+                  child: Center(
+                    child: Container(
+                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.width / 2),
+                      child: Column(
+                        children: <Widget>[
+                          FadeIn(
+                            delay: 1,
+                            child: Shimmer.fromColors(
+                              baseColor: Color(0xff18d26e),
+                              highlightColor: Color(0xff0eff7e),
+                              child: ImageIcon(
+                                AssetImage('images/new_logo.png'),
+                                color: Color(0xff18d26e),
+                                size: MediaQuery.of(context).size.width / 2,
                               ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 10.0, right: 10.0),
-                                child: Text('Login',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                color: Colors.white,
-                                width: 90.0,
-                                height: 1.0,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    FadeIn(
-                      delay: 1.33,
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 80.0, left: 50.0, right: 50.0),
-                        child: InkWell(
-                          onTap: () async{
-                            checkConn(true);
-                          },
-                          child: Container(
-                            padding: EdgeInsets.all(8.0),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25.0),
-                              color: Colors.white,
                             ),
-                            child: Row(
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.all(4.0),
-                                  child: Image.asset('images/google.png',
-                                    width: 30.0,
-                                    height: 30.0,
-                                  ),
-                                ),
+                          ),
 
-                                Padding(
-                                  padding: EdgeInsets.only(left: 20.0),
-                                  child: Text('Sign in with Google',
-                                    style: TextStyle(
-                                        color: Colors.black87,
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.w400
+                          FadeIn(
+                            delay: 1,
+                            child: Padding(
+                              padding: EdgeInsets.only(left: constraints.maxWidth >= 2500 ?
+                                  MediaQuery.of(context).size.width / 6 : MediaQuery.of(context).size.width / 10,
+                                  right: 10.0, top: 20),
+                              child: Shimmer.fromColors(
+                                baseColor: Color(0x18d26e),
+                                highlightColor: Color(0xff0eff7e),
+                                child: Row(
+                                  children: <Widget>[
+                                    Container(
+                                      color: Color(0xff18d26e),
+                                      width: 90.0,
+                                      height: 1.0,
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                                      child: Text('Welcome',
+                                        style: TextStyle(
+                                            color: Color(0xff18d26e),
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      color: Color(0xff18d26e),
+                                      width: 90.0,
+                                      height: 1.0,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          FadeIn(
+                              delay: 1.33,
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 80.0, left: 50.0, right: 50.0),
+                                child: InkWell(
+                                  onTap: () async{
+                                    checkConn(true);
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.all(8.0),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(25.0),
+                                      color: Colors.white,
+                                    ),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: EdgeInsets.only(left: constraints.maxWidth >= 2500 ?
+                                              MediaQuery.of(context).size.width / 6.5 : MediaQuery.of(context).size.width / 15),
+                                          child: Image.asset('images/google.png',
+                                            width: 30.0,
+                                            height: 30.0,
+                                          ),
+                                        ),
+
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 10.0),
+                                          child: Text('Sign in with Google',
+                                            style: TextStyle(
+                                                color: Colors.black87,
+                                                fontSize: 18.0,
+                                                fontWeight: FontWeight.w400
+                                            ),
+                                          ),
+                                        )
+                                      ],
                                     ),
                                   ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      )
-                    ),
-
-                    FadeIn(
-                      delay: 1.66,
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
-                        child: InkWell(
-                          onTap: (){
-                            // facebook sign in implementation
-                            checkConn(false);
-                          },
-                          child: Container(
-                            padding: EdgeInsets.all(8.0),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25.0),
-                              color: Color(0xFF4267B2),
-                            ),
-                            child: Row(
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.all(6.0),
-                                  child: ImageIcon(
-                                    AssetImage('images/fb.png'),
-                                    color: Colors.white,
-                                  )
                                 ),
+                              )
+                          ),
 
-                                Padding(
-                                  padding: EdgeInsets.only(left: 25.0),
-                                  child: Text('Continue with Facebook',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.w400
+                          FadeIn(
+                              delay: 1.66,
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 20.0,
+                                    left: constraints.maxWidth >= 2500 ? 50.0 : 20.0, right: constraints.maxWidth >= 2500 ? 50.0 : 20.0),
+                                child: InkWell(
+                                  onTap: (){
+                                    // facebook sign in implementation
+                                    checkConn(false);
+                                  },
+                                  child: Container(
+                                    height: 48.0,
+                                    padding: EdgeInsets.all(8.0),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(25.0),
+                                      color: Color(0xFF4267B2),
+                                    ),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Padding(
+                                            padding: EdgeInsets.only(left: constraints.maxWidth >= 2500 ?
+                                                MediaQuery.of(context).size.width / 6.5 : MediaQuery.of(context).size.width / 13),
+                                            child: ImageIcon(
+                                              AssetImage('images/fb.png'),
+                                              color: Colors.white,
+                                            )
+                                        ),
+
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 10.0),
+                                          child: Text('Continue with Facebook',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18.0,
+                                                fontWeight: FontWeight.w400
+                                            ),
+                                          ),
+                                        )
+                                      ],
                                     ),
                                   ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
+                                ),
+                              )
+                          )
+                        ],
+                      ),
+                    ),
+                  )
+              ),
+
+              Visibility(
+                visible: cLoading,
+                child: Center(
+                  child: Container(
+                      alignment: Alignment.center,
+                      color: Colors.white.withOpacity(0.9),
+                      child: SpinKitCircle(
+                        size: 40.0,
+                        color: Colors.black54,
                       )
-                    )
-                  ],
+                  ),
                 ),
-              ),
-            )
-          ),
-
-          Visibility(
-            visible: cLoading,
-            child: Center(
-              child: Container(
-                alignment: Alignment.center,
-                color: Colors.white.withOpacity(0.9),
-                child: SpinKitCircle(
-                  size: 40.0,
-                  color: Colors.black54,
-                )
-              ),
-            ),
-          )
-        ],
-      ),
+              )
+            ],
+          );
+        },
+      )
     );
   }
 }

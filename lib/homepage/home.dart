@@ -2,14 +2,14 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
-import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:pimp_my_button/pimp_my_button.dart';
 import 'package:flushbar/flushbar.dart';
 
 import '../utils/app_bar.dart';
+import 'about_us.dart';
 import 'package:admin_app/homepage/event_details.dart';
-import 'package:admin_app/homepage/profile.dart';
 import 'package:admin_app/transitions/slide_top_route.dart';
 import '../utils/prefs.dart';
 
@@ -24,7 +24,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home>{
   var sp;
-  String pic = "", uid = "";
+  String uid = "";
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   Widget listcache;
@@ -38,41 +38,27 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home>{
   void getPreferences() async{
     sp = await Prefs().getPrefs();
     setState(() {
-      pic = sp.getString('photo');
       uid = sp.getString('uid');
     });
-    Provider.of<UrlProvider>(context, listen: false).setUrl(pic);
   }
 
   @override
   Widget build(BuildContext context) {
-    var URL = Provider.of<UrlProvider>(context, listen: false);
 
     return Scaffold(
         key: scaffoldKey,
         appBar: TopBar(
-          title: 'Du Unify',
+          title: 'DU Unify',
           child: Icon(Icons.person, color: Colors.white),
-          enterPage: Profile(UID: uid),
+          enterPage: AboutUs(),
           isVisible: true,
           isEventDet: false,
-          photoUrl: URL.url,
         ),
         body: Padding(
           padding: const EdgeInsets.only(left: 15.0, top: 15.0),
           child: ListView(
             physics: NeverScrollableScrollPhysics(),
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: Text(
-                  'Events',
-                  style: TextStyle(
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
 
               Container(
                 height: MediaQuery.of(context).size.height,
@@ -113,12 +99,15 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home>{
                                   orgn: document['orgn'],
                                   likes: document['likes'],
                                   likeArr: List.castFrom(document['liked_by']),
+                                  fbLink: document['fbLink'],
+                                  igLink: document['igLink'],
                                   document: document,
                                   scaffoldKey: scaffoldKey,
+                                  formLink: document['formLink'],
                                 ) as Widget;
                               }).toList()..add(
                                   Container(
-                                    height: 200,
+                                    height: 150,
                                   )
                               )
                           );
@@ -139,19 +128,19 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin<Home>{
 }
 
 class SingleCard extends StatefulWidget {
-  final String photoUrl1, photoUrl2, photoUrl3, photoUrl4, title, date, venue, orgn, desc, index;
+  final String photoUrl1, photoUrl2, photoUrl3, photoUrl4, title, date, venue, orgn, desc, index, formLink, fbLink, igLink;
   final List<String> likeArr;
   final DocumentSnapshot document;
   final GlobalKey<ScaffoldState> scaffoldKey;
   final int likes;
 
   SingleCard({
-    @required this.title,
-    @required this.photoUrl1,
-    @required this.photoUrl2,
-    @required this.photoUrl3,
-    @required this.photoUrl4,
-    @required this.date,
+    this.title,
+    this.photoUrl1,
+    this.photoUrl2,
+    this.photoUrl3,
+    this.photoUrl4,
+    this.date,
     this.desc,
     this.index,
     this.venue,
@@ -159,7 +148,10 @@ class SingleCard extends StatefulWidget {
     this.likes,
     this.likeArr,
     this.document,
-    this.scaffoldKey
+    this.scaffoldKey,
+    this.formLink,
+    this.fbLink,
+    this.igLink
   });
 
   @override
@@ -171,6 +163,7 @@ class _SingleCardState extends State<SingleCard> with AutomaticKeepAliveClientMi
   String uid = "";
   int currLikes;
   var sp;
+  AnimationController _controller;
 
   @override
   void initState() {
@@ -182,7 +175,9 @@ class _SingleCardState extends State<SingleCard> with AutomaticKeepAliveClientMi
     Flushbar(
       mainButton: FlatButton(
         child: Icon(Icons.arrow_forward_ios, color: Colors.white),
-        onPressed: (){},
+        onPressed: (){
+
+        },
       ),
       messageText: Center(
           child: CachedNetworkImage(
@@ -201,13 +196,13 @@ class _SingleCardState extends State<SingleCard> with AutomaticKeepAliveClientMi
           )
       ),
       duration: Duration(milliseconds: 1700),
-      flushbarPosition: FlushbarPosition.TOP,
+      flushbarPosition: FlushbarPosition.BOTTOM,
       flushbarStyle: FlushbarStyle.FLOATING,
       reverseAnimationCurve: Curves.decelerate,
       forwardAnimationCurve: Curves.elasticOut,
       margin: EdgeInsets.only(left: 140.0, right: 60.0),
       borderRadius: 10.0,
-      backgroundColor: Color(0xffeecda3),
+      backgroundColor: Color(0xff18d26e),
     )..show(context);
   }
 
@@ -246,7 +241,7 @@ class _SingleCardState extends State<SingleCard> with AutomaticKeepAliveClientMi
               'eventID': widget.index,
               'desc': widget.desc,
               'venue': widget.venue,
-              'orgn': widget.orgn
+              'orgn': widget.orgn,
             });
           }
           else{
@@ -276,6 +271,37 @@ class _SingleCardState extends State<SingleCard> with AutomaticKeepAliveClientMi
     });
   }
 
+  setLike(AnimationController controller){
+    if (isLike){
+      setState((){
+        isLike = false;
+        currLikes--;
+      });
+      if (currLikes != -1 && widget.document['liked_by'].contains(uid)){
+        Firestore.instance.collection('events').document('${widget.index}')
+            .updateData({
+          'liked_by': FieldValue.arrayRemove([uid]),
+          'likes': FieldValue.increment(-1)
+        });
+      }
+    }
+    else{
+      controller.forward();
+      setState(() {
+        isLike = true;
+        currLikes++;
+      });
+      if (!widget.document['liked_by'].contains(uid)){
+        print('some2');
+        Firestore.instance.collection('events').document('${widget.index}')
+            .updateData({
+          'liked_by': FieldValue.arrayUnion([uid]),
+          'likes': FieldValue.increment(1)
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -283,6 +309,9 @@ class _SingleCardState extends State<SingleCard> with AutomaticKeepAliveClientMi
       padding: EdgeInsets.only(bottom: 15.0),
       height: MediaQuery.of(context).size.width / 1.2,
       child: InkWell(
+        onDoubleTap: (){
+          setLike(_controller);
+        },
         onTap: () {
           Navigator.push(
               context,
@@ -299,6 +328,9 @@ class _SingleCardState extends State<SingleCard> with AutomaticKeepAliveClientMi
                     date: widget.date,
                     venue: widget.venue,
                     orgn: widget.orgn,
+                    link: widget.formLink,
+                    fbLink: widget.fbLink,
+                    igLink: widget.igLink,
                   )
               )
           );
@@ -343,13 +375,11 @@ class _SingleCardState extends State<SingleCard> with AutomaticKeepAliveClientMi
                             begin: FractionalOffset.topCenter,
                             end: FractionalOffset.bottomCenter,
                             colors: [
-                              Colors.grey.withOpacity(0.0),
+                              Colors.black,
+                              Colors.grey.withOpacity(0.3),
                               Colors.black
                             ],
-                            stops: [
-                              0.0,
-                              1.0
-                            ])),
+                            )),
                   ),
                 ),
                 Align(
@@ -384,54 +414,34 @@ class _SingleCardState extends State<SingleCard> with AutomaticKeepAliveClientMi
                 Positioned(
                   top: 10.0,
                   right: 20.0,
-                  child: LikeButton(
-                    isLiked: isLike,
-                    likeBuilder: (bool isLiked) {
-                      return Icon(
-                        isLiked ? Icons.favorite : Icons.favorite_border,
-                        color: isLiked ? Colors.red : Colors.white,
-                        size: 30.0,
+                  child: PimpedButton(
+                    particle: RectangleDemoParticle(),
+                    pimpedWidgetBuilder: (context, controller){
+                      _controller = controller;
+                      return LikeButton(
+                        isLiked: isLike,
+                        likeBuilder: (bool isLiked) {
+                          return Icon(
+                            isLiked ? Icons.favorite : Icons.favorite_border,
+                            color: isLiked ? Colors.red : Colors.white,
+                            size: 30.0,
+                          );
+                        },
+                        likeCount: currLikes,
+                        countBuilder: (int count, bool isLiked, String text) {
+                          var color = Colors.white;
+                          Widget result;
+                          result = Text(count >= 1000 ? (count / 1000).toStringAsFixed(1) + 'k' : text,
+                              style: TextStyle(color: color)
+                          );
+                          return result;
+                        },
+                        onTap: (bool liked){
+                          Completer<bool> completer = new Completer<bool>();
+                          setLike(_controller);
+                          return completer.future;
+                        },
                       );
-                    },
-                    likeCount: currLikes,
-                    countBuilder: (int count, bool isLiked, String text) {
-                      var color = Colors.white;
-                      Widget result;
-                      result = Text(count >= 1000 ? (count / 1000).toStringAsFixed(1) + 'k' : text,
-                          style: TextStyle(color: color)
-                      );
-                      return result;
-                    },
-                    onTap: (bool liked){
-                      Completer<bool> completer = new Completer<bool>();
-                      if (isLike){
-                        setState((){
-                          isLike = false;
-                          currLikes--;
-                        });
-                        if (currLikes != -1 && widget.document['liked_by'].contains(uid)){
-                          Firestore.instance.collection('events').document('${widget.index}')
-                              .updateData({
-                            'liked_by': FieldValue.arrayRemove([uid]),
-                            'likes': FieldValue.increment(-1)
-                          });
-                        }
-                      }
-                      else{
-                        setState(() {
-                          isLike = true;
-                          currLikes++;
-                        });
-                        if (!widget.document['liked_by'].contains(uid)){
-                          print('some2');
-                          Firestore.instance.collection('events').document('${widget.index}')
-                              .updateData({
-                            'liked_by': FieldValue.arrayUnion([uid]),
-                            'likes': FieldValue.increment(1)
-                          });
-                        }
-                      }
-                      return completer.future;
                     },
                   )
                 )

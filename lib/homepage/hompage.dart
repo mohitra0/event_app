@@ -1,10 +1,10 @@
+import 'package:admin_app/homepage/profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import 'about_us.dart';
 import 'home.dart';
 import 'search.dart';
 import 'add_event.dart';
@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       Search(key: PageStorageKey('Search')),
       AddEvent(key: PageStorageKey('Add')),
       Review(key: PageStorageKey('Rating')),
-      AboutUs(key: PageStorageKey('AboutUs')),
+      Profile(key: PageStorageKey('Profile')),
 
     ];
     WidgetsBinding.instance.addObserver(this);
@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         body: Stack(
           children: <Widget>[
             PageStorage(
-              child: _getPage(currentPage),
+              child: getPage(currentPage),
               bucket: bucket,
             ),
             Positioned.directional(
@@ -78,17 +78,17 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               height: 60,
               child: CurvedNavigationBar(
                 key: bottomNavigationKey,
-                color: Color(0xFF232b2b),
+                color: Color(0xFF000000),
                 height: 60.0,
                 backgroundColor: Colors.transparent,
                 animationCurve: Curves.easeOutCubic,
                 animationDuration: Duration(milliseconds: 400),
                 items: <Widget>[
-                  Icon(FontAwesomeIcons.home, color: Colors.white),
+                  Icon(Icons.home, color: Colors.white),
                   Icon(FontAwesomeIcons.search, color: Colors.white),
                   Icon(FontAwesomeIcons.plus, color: Colors.white),
                   Icon(Icons.trending_up, color: Colors.white),
-                  Icon(FontAwesomeIcons.user, color: Colors.white)
+                  Icon(Icons.person_pin, color: Colors.white)
                 ],
                 onTap: (index) {
                   setState(() {
@@ -105,7 +105,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     );
   }
 
-  _getPage(int currentPage) {
+  getPage(int currentPage) {
 //    switch (currentPage) {
 //      case 0:
 //        return Home(key: PageStorageKey('Home'), controller: controller);

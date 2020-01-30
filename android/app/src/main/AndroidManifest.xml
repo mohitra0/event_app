@@ -13,7 +13,7 @@
     <application
         tools:replace="android:label"
         android:name="io.flutter.app.FlutterApplication"
-        android:label="Unify Admin"
+        android:label="DU Unify"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

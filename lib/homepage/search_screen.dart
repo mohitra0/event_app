@@ -61,6 +61,8 @@ class _SearchScreenState extends State<SearchScreen> {
         tempSearchStore[index]['venue'],
         tempSearchStore[index]['Edate'],
         tempSearchStore[index]['eventID'],
+        tempSearchStore[index]['igLink'],
+        tempSearchStore[index]['fbLink']
       );
     });
   }
@@ -89,6 +91,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 orgn: event.orgn,
                 venue: event.venue,
                 date: event.date,
+                igLink: event.igLink,
+                fbLink: event.fbLink,
               );
             },
             crossAxisCount: 2,
@@ -171,7 +175,7 @@ class _SearchScreenState extends State<SearchScreen> {
 }
 
 class Event{
-  String title, photoUrl1,photoUrl2, photoUrl3, photoUrl4, date, desc, venue, orgn, index;
+  String title, photoUrl1,photoUrl2, photoUrl3, photoUrl4, date, desc, venue, orgn, index, fbLink, igLink;
 
   Event(
     this.title,
@@ -183,6 +187,8 @@ class Event{
     this.orgn,
     this.venue,
     this.date,
-    this.index
+    this.index,
+    this.igLink,
+    this.fbLink
   );
 }

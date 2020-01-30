@@ -14,220 +14,214 @@ class Search extends StatefulWidget {
   _SearchState createState() => _SearchState();
 }
 
-class _SearchState extends State<Search> with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin{
-
+class _SearchState extends State<Search>
+    with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
   List<EventCategories> event_categories = <EventCategories>[
     EventCategories(
-      title: 'Photography',
-      photoUrl: 'images/categories/camera.png',
-      color1: Color(0xff32c6f4),
-      color2: Color(0xffAEE5F7),
-      width: 80.0,
-      height: 60.0
-    ),
+        title: 'Photography',
+        photoUrl: 'images/categories/camera.png',
+        color1: Color(0xff32c6f4),
+        color2: Color(0xffAEE5F7),
+        width: 80.0,
+        height: 60.0),
     EventCategories(
-      title: 'North East',
-      photoUrl: 'images/categories/north_east.png',
-      color1: Color(0xff8cc540),
-      color2: Color(0xffBAEC78),
-      width: 150.0,
-      height: 150.0
-    ),
+        title: 'North East',
+        photoUrl: 'images/categories/north_east.png',
+        color1: Color(0xff8cc540),
+        color2: Color(0xffBAEC78),
+        width: 150.0,
+        height: 150.0),
     EventCategories(
-      title: 'Fest',
-      photoUrl: 'images/categories/fest.png',
-      color1: Color(0xff000000),
-      color2: Color(0xff6C6C67),
-      width: 80.0,
-      height: 60.0
-    ),
+        title: 'Fest',
+        photoUrl: 'images/categories/fest.png',
+        color1: Color(0xff000000),
+        color2: Color(0xff6C6C67),
+        width: 100.0,
+        height: 100.0),
     EventCategories(
-      title: 'Drama',
-      photoUrl: 'images/categories/drama.png',
-      color1: Color(0xff2f2f26),
-      color2: Color(0xff696958),
-      width: 80.0,
-      height: 60.0
-    ),
+        title: 'Drama',
+        photoUrl: 'images/categories/drama.png',
+        color1: Color(0xff2f2f26),
+        color2: Color(0xff696958),
+        width: 80.0,
+        height: 60.0),
     EventCategories(
-      title: 'Debate',
-      photoUrl: 'images/categories/debate.png',
-      color1: Color(0xfffd4642),
-      color2: Color(0xffF88481),
-      width: 80.0,
-      height: 60.0
-    ),
+        title: 'Debate',
+        photoUrl: 'images/categories/debate.png',
+        color1: Color(0xfffd4642),
+        color2: Color(0xffF88481),
+        width: 80.0,
+        height: 60.0),
     EventCategories(
-      title: 'Music',
-      photoUrl: 'images/categories/music.png',
-      color1: Color(0xff00b5f1),
-      color2: Color(0xff5AD4FC),
-      width: 80.0,
-      height: 60.0
-    ),
+        title: 'Music',
+        photoUrl: 'images/categories/music.png',
+        color1: Color(0xff00b5f1),
+        color2: Color(0xff5AD4FC),
+        width: 80.0,
+        height: 60.0),
     EventCategories(
-      title: 'Enactus',
-      photoUrl: 'images/categories/enactus.png',
-      color1: Color(0xfff1801b),
-      color2: Color(0xffF89D4C),
-      width: 80.0,
-      height: 60.0
-    ),
+        title: 'Enactus',
+        photoUrl: 'images/categories/enactus.png',
+        color1: Color(0xfff1801b),
+        color2: Color(0xffF89D4C),
+        width: 80.0,
+        height: 60.0),
     EventCategories(
-      title: 'Finance',
-      photoUrl: 'images/categories/finance.png',
-      color1: Color(0xff40c8f4),
-      color2: Color(0xff60d8ff),
-      width: 80.0,
-      height: 60.0
-    ),
+        title: 'Finance',
+        photoUrl: 'images/categories/finance.png',
+        color1: Color(0xff40c8f4),
+        color2: Color(0xff60d8ff),
+        width: 80.0,
+        height: 60.0),
     EventCategories(
-      title: 'Street Play',
-      photoUrl: 'images/categories/street_play.png',
-      color1: Color(0xfff4bc96),
-      color2: Color(0xffF7CCAF),
-      width: 80.0,
-      height: 60.0
-    ),
+        title: 'Street Play',
+        photoUrl: 'images/categories/street_play.png',
+        color1: Color(0xfff4bc96),
+        color2: Color(0xffF7CCAF),
+        width: 80.0,
+        height: 60.0),
     EventCategories(
-      title: 'Game events',
-      photoUrl: 'images/categories/game.png',
-      color1: Color(0xffed1c24),
-      color2: Color(0xffFF7A7F),
-      width: 80.0,
-      height: 60.0
-    ),
+        title: 'Game events',
+        photoUrl: 'images/categories/game.png',
+        color1: Color(0xffed1c24),
+        color2: Color(0xffFF7A7F),
+        width: 80.0,
+        height: 60.0),
     EventCategories(
-      title: 'Technical events',
-      photoUrl: 'images/categories/computer.png',
-      color1: Color(0xff222424),
-      color2: Color(0xff5d7272),
-      width: 80.0,
-      height: 60.0
-    ),
+        title: 'Technical events',
+        photoUrl: 'images/categories/computer.png',
+        color1: Color(0xff222424),
+        color2: Color(0xff5d7272),
+        width: 80.0,
+        height: 60.0),
     EventCategories(
-      title: 'Dance',
-      photoUrl: 'images/categories/dance.png',
-      color1: Color(0xffa19590),
-      color2: Color(0xffa19590),
-      width: 80.0,
-      height: 60.0
-    ),
+        title: 'Dance',
+        photoUrl: 'images/categories/dance.png',
+        color1: Color(0xffa19590),
+        color2: Color(0xffa19590),
+        width: 80.0,
+        height: 60.0),
     EventCategories(
-      title: 'Women Welfare',
-      photoUrl: 'images/categories/women.png',
-      color1: Color(0xff32c6f4),
-      color2: Color(0xffAEE5F7),
-      width: 80.0,
-      height: 60.0
-    ),
+        title: 'Women Welfare',
+        photoUrl: 'images/categories/women.png',
+        color1: Color(0xff32c6f4),
+        color2: Color(0xffAEE5F7),
+        width: 80.0,
+        height: 60.0),
     EventCategories(
-      title: 'Sports',
-      photoUrl: 'images/categories/camera.png',
-      color1: Color(0xff32c6f4),
-      color2: Color(0xffAEE5F7),
-      width: 80.0,
-      height: 60.0
-    ),
+        title: 'Sports',
+        photoUrl: 'images/categories/sports.png',
+        color1: Color(0xffD7C8EE),
+        color2: Color(0xffEAE7EF),
+        width: 160.0,
+        height: 80.0),
     EventCategories(
-      title: 'Internship',
-      photoUrl: 'images/categories/internship.png',
-      color1: Color(0xfff15d54),
-      color2: Color(0xffEF9994),
-      width: 80.0,
-      height: 60.0
-    ),
+        title: 'Internship',
+        photoUrl: 'images/categories/internship.png',
+        color1: Color(0xfff15d54),
+        color2: Color(0xffEF9994),
+        width: 80.0,
+        height: 60.0),
     EventCategories(
-      title: 'NSS',
-      photoUrl: 'images/categories/camera.png',
-      color1: Color(0xff32c6f4),
-      color2: Color(0xffAEE5F7),
-      width: 80.0,
-      height: 60.0
-    ),
+        title: 'NSS',
+        photoUrl: 'images/categories/camera.png',
+        color1: Color(0xff32c6f4),
+        color2: Color(0xffAEE5F7),
+        width: 80.0,
+        height: 60.0),
     EventCategories(
-      title: 'Other Events',
-      photoUrl: 'images/categories/camera.png',
-      color1: Color(0xff32c6f4),
-      color2: Color(0xffAEE5F7),
-      width: 80.0,
-      height: 60.0
-    ),
+        title: 'Other Events',
+        photoUrl: 'images/categories/other_events.png',
+        color1: Color(0xff32c6f4),
+        color2: Color(0xffAEE5F7),
+        width: 80.0,
+        height: 60.0),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (context, isInnerBoxScrolled){
-          return <Widget>[
-            SliverAppBar(
-              pinned: true,
-              floating: false,
-              expandedHeight: 150.0,
-                flexibleSpace: FlexibleSpaceBar(
-                  centerTitle: true,
-                  titlePadding: EdgeInsets.all(10.0),
-                  title: Material(
-                    child: InkWell(
-                      onTap: (){
-                        Navigator.push(context, SlideTopRoute(page: SearchScreen()));
-                      },
-                      child: Container(
-                        width: 230,
-                        height: 30.0,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(10.0))
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.only(left: 5.0),
-                          child: Row(
-                            children: <Widget>[
-                              Icon(FontAwesomeIcons.search, size: 15.0, color: Color(0xFF232b2b)),
-                              Padding(
-                                padding: EdgeInsets.only(left: 10.0),
-                                child: Text('Search',
-                                  style: TextStyle(
-                                    color: Color(0xFF232b2b),
-                                    fontSize: 15.0
+      body: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints){
+          return NestedScrollView(
+            headerSliverBuilder: (context, isInnerBoxScrolled) {
+              return <Widget>[
+                SliverAppBar(
+                  pinned: true,
+                  floating: false,
+                  expandedHeight: 150.0,
+                  flexibleSpace: FlexibleSpaceBar(
+                    centerTitle: true,
+                    titlePadding: EdgeInsets.all(10.0),
+                    title: Material(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(5.0))
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context, SlideTopRoute(page: SearchScreen()));
+                        },
+                        child: Container(
+                          width: 230,
+                          height: 30.0,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                              BorderRadius.all(Radius.circular(5.0))),
+                          child: Padding(
+                            padding: EdgeInsets.only(left: constraints.maxWidth >= 2500 ?
+                                    MediaQuery.of(context).size.width / 10: MediaQuery.of(context).size.width / 16),
+                            child: Row(
+                              children: <Widget>[
+                                Icon(FontAwesomeIcons.search,
+                                    size: 15.0, color: Color(0xFF232b2b)),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 10.0),
+                                  child: Text(
+                                    'Search by Event Name',
+                                    style: TextStyle(
+                                        color: Color(0xFF232b2b), fontSize: 15.0),
                                   ),
-                                ),
-                              )
-                            ],
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
+                    background: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Color(0xff787878), Color(0xff232b2b), Color(0xff232b2b)],
+                        ),
+                      ),
+                    ),
                   ),
-                  background: Container(
-                    color: Color(0xFF232b2b),
-                  ),
-                ),
-            )
-          ];
+                )
+              ];
+            },
+            body: GridView.builder(
+              padding: EdgeInsets.only(bottom: 70.0, top: 10.0),
+              shrinkWrap: true,
+              key: widget.key,
+              itemCount: event_categories.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, childAspectRatio: 1.5),
+              itemBuilder: (context, index) {
+                return SingleCategory(
+                  title: event_categories[index].title,
+                  photoUrl: event_categories[index].photoUrl,
+                  color1: event_categories[index].color1,
+                  color2: event_categories[index].color2,
+                  height: event_categories[index].height,
+                  width: event_categories[index].width,
+                );
+              },
+            ),
+          );
         },
-        body: GridView.builder(
-          padding: EdgeInsets.only(bottom: 70.0, top: 10.0),
-          shrinkWrap: true,
-          key: widget.key,
-          itemCount: event_categories.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 1.5
-          ),
-          itemBuilder: (context, index){
-            return SingleCategory(
-              title: event_categories[index].title,
-              photoUrl: event_categories[index].photoUrl,
-              color1: event_categories[index].color1,
-              color2: event_categories[index].color2,
-              height: event_categories[index].height,
-              width: event_categories[index].width,
-            );
-          },
-        ),
-      ),
+      )
     );
   }
 
@@ -241,15 +235,24 @@ class SingleCategory extends StatelessWidget {
   final Color color1, color2;
   final double width, height;
 
-  SingleCategory({@required this.title, @required this.photoUrl, this.color1, this.color2, this.height, this.width});
+  SingleCategory(
+      {@required this.title,
+      @required this.photoUrl,
+      this.color1,
+      this.color2,
+      this.height,
+      this.width});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(left: 5.0, right: 5.0),
       child: InkWell(
-        onTap: (){
-          Navigator.push(context, SlideTopRoute(page: CategoryDetails(category: title, color: color1)));
+        onTap: () {
+          Navigator.push(
+              context,
+              SlideTopRoute(
+                  page: CategoryDetails(category: title, color: color1)));
         },
         child: Card(
           elevation: 5.0,
@@ -258,39 +261,36 @@ class SingleCategory extends StatelessWidget {
             children: <Widget>[
               Container(
                 width: 200.0,
-                height: 125.0,
+                height: double.infinity ,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     gradient: LinearGradient(
                         colors: [color1, color2],
                         begin: Alignment.topRight,
                         end: Alignment.bottomLeft,
-                        stops: [0.5, 1.0]
-                    )
-                ),
+                        stops: [0.5, 1.0])),
               ),
-
               Container(
-                padding: EdgeInsets.only(left: 10.0, top: 15.0),
+                padding: EdgeInsets.only(left: title == 'Sports' ? 2.0 : 10.0, top: 15.0),
                 alignment: Alignment.centerLeft,
-                child: Image.asset(photoUrl,
+                child: Image.asset(
+                  photoUrl,
                   fit: BoxFit.fitHeight,
                   width: width,
                   height: height,
                 ),
               ),
-
               Align(
                 alignment: Alignment.topRight,
                 child: Padding(
                   padding: EdgeInsets.only(top: 5.0, right: 5.0),
-                  child: Text(title,
+                  child: Text(
+                    title,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 18.0,
-                        fontWeight: FontWeight.w400
-                    ),
+                        fontWeight: FontWeight.w400),
                   ),
                 ),
               ),

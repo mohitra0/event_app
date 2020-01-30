@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 const List<Color> orangeGradients = [
-  Color(0xffeecda3), Color(0xffef629f)
+  Color(0xff434343), Color(0xff000000)
 ];
 
 const List<Color> aquaGradients = [

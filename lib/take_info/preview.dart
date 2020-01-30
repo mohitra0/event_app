@@ -20,7 +20,7 @@ class PreviewPage extends StatelessWidget {
             }
           },
         ),
-        backgroundColor: Color(0xFF78EC6C),
+        backgroundColor: Color(0xff434343),
         title: Text('Preview',
           style: TextStyle(
             color: Colors.white

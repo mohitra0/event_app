@@ -19,6 +19,8 @@ class CategoryDetails extends StatefulWidget {
 }
 
 class _CategoryDetailsState extends State<CategoryDetails> {
+  Widget gridCache;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,10 +34,11 @@ class _CategoryDetailsState extends State<CategoryDetails> {
               stops: [0.1, 1.0]),
         ),
         child: ListView(
-          physics: NeverScrollableScrollPhysics(),
+          padding: EdgeInsets.only(bottom: 10.0),
+          physics: BouncingScrollPhysics(),
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.only(left: 20.0, top: 30.0, bottom: 20.0),
+              padding: EdgeInsets.only(left: 20.0, top: 50.0, bottom: 20.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
@@ -65,63 +68,68 @@ class _CategoryDetailsState extends State<CategoryDetails> {
                 ),
               ),
             ),
-            Container(
-              height: MediaQuery.of(context).size.height,
-              child: StreamBuilder(
-                stream: Firestore.instance
-                    .collection('events')
-                    .where('category', isEqualTo: widget.category)
-                    .snapshots(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<QuerySnapshot> snapShot) {
-                  if (snapShot.hasError)
-                    return Text('Error: ${snapShot.error}');
-                  switch (snapShot.connectionState) {
-                    case ConnectionState.waiting:
-                      return Center(
-                        child: Container(
-                          width: 40.0,
-                          height: 40.0,
-                          child: CircularProgressIndicator(
-                              valueColor: new AlwaysStoppedAnimation<Color>(
-                                  Colors.white)),
+            StreamBuilder(
+              stream: Firestore.instance
+                  .collection('events')
+                  .where('category', isEqualTo: widget.category)
+                  .snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapShot) {
+                if (snapShot.hasError)
+                  return Text('Error: ${snapShot.error}');
+                switch (snapShot.connectionState) {
+                  case ConnectionState.waiting:
+                    return Center(
+                      child: Container(
+                        width: 40.0,
+                        height: 40.0,
+                        child: CircularProgressIndicator(
+                            valueColor: new AlwaysStoppedAnimation<Color>(
+                                Colors.white)),
+                      ),
+                    );
+                  default:
+                    if (snapShot.data.documents.length == 0) {
+                      return Container(
+                        padding: EdgeInsets.only(bottom: 200.0),
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Events in this category \n  will come very soon! \n        Stay tuned... 😉',
+                          style:
+                              TextStyle(fontSize: 20.0, color: Colors.white),
                         ),
                       );
-                    default:
-                      if (snapShot.data.documents.length == 0){
-                        return Container(
-                          padding: EdgeInsets.only(bottom: 200.0),
-                          alignment: Alignment.center,
-                          child: Text('Events in this category \n  will come very soon! \n        Stay tuned... 😉',
-                            style: TextStyle(
-                              fontSize: 20.0,
-                              color: Colors.white
-                            ),
-                          ),
-                        );
-                      }
-                      return GridView(
-                        shrinkWrap: true,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2, childAspectRatio: 9 / 10),
-                        children: snapShot.data.documents.map((document) {
-                          return SingleEventCategory(
-                            title: document['Ename'],
-                            photoUrl1: document['Url1'],
-                            photoUrl2: document['Url2'],
-                            photoUrl3: document['Url3'],
-                            photoUrl4: document['Url4'],
-                            date: document['Edate'],
-                            desc: document['Edesc'],
-                            venue: document['venue'],
-                            orgn: document['orgn'],
-                            index: document['eventID'],
-                          );
-                        }).toList(),
+                    }
+                    if (gridCache == null){
+                      gridCache = GridView(
+                          shrinkWrap: true,
+                          physics: BouncingScrollPhysics(),
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 9 / 10,
+                              crossAxisSpacing: 5.0,
+                              mainAxisSpacing: 5.0),
+                          children: snapShot.data.documents.map((document) {
+                            return SingleEventCategory(
+                              title: document['Ename'],
+                              photoUrl1: document['Url1'],
+                              photoUrl2: document['Url2'],
+                              photoUrl3: document['Url3'],
+                              photoUrl4: document['Url4'],
+                              date: document['Edate'],
+                              desc: document['Edesc'],
+                              venue: document['venue'],
+                              orgn: document['orgn'],
+                              index: document['eventID'],
+                              fbLink: document['fbLink'],
+                              igLink: document['igLink'],
+                            );
+                          }).toList()
                       );
-                  }
-                },
-              ),
+                    }
+                    return gridCache;
+                }
+              },
             )
           ],
         ),
@@ -140,7 +148,9 @@ class SingleEventCategory extends StatelessWidget {
       desc,
       venue,
       orgn,
-      index;
+      index,
+      fbLink,
+      igLink;
 
   SingleEventCategory(
       {this.title,
@@ -152,7 +162,9 @@ class SingleEventCategory extends StatelessWidget {
       this.desc,
       this.venue,
       this.orgn,
-      this.index});
+      this.index,
+      this.igLink,
+      this.fbLink});
 
   @override
   Widget build(BuildContext context) {
@@ -176,12 +188,13 @@ class SingleEventCategory extends StatelessWidget {
             )));
       },
       child: Container(
-        width: 80.0,
-        height: 170.0,
+        height: 150.0,
+        width: 100.0,
         child: Card(
-          margin: EdgeInsets.only(left: 5.0),
+          margin: EdgeInsets.only(left: 5.0, right: 5.0),
           elevation: 10.0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
           child: Stack(
             fit: StackFit.expand,
             children: <Widget>[
@@ -200,9 +213,7 @@ class SingleEventCategory extends StatelessWidget {
                         size: 10.0,
                       ),
                     ),
-                  )
-              ),
-
+                  )),
               ClipRRect(
                 borderRadius: BorderRadius.circular(10.0),
                 child: Container(
@@ -212,22 +223,17 @@ class SingleEventCategory extends StatelessWidget {
                           begin: FractionalOffset.topCenter,
                           end: FractionalOffset.bottomCenter,
                           colors: [Colors.grey.withOpacity(0.0), Colors.black],
-                          stops: [0.0, 1.0]
-                      )
-                  ),
+                          stops: [0.0, 1.0])),
                 ),
               ),
-
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
                   padding: EdgeInsets.only(bottom: 10.0),
-                  child: Text(title,
+                  child: Text(
+                    title,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15.0
-                    ),
+                    style: TextStyle(color: Colors.white, fontSize: 15.0),
                   ),
                 ),
               )

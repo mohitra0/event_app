@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'subscribe.dart';
 import '../utils/fade_in.dart';
 import '../utils/prefs.dart';
+import '../take_info/take_info.dart';
 
 class AddEvent extends StatefulWidget {
   AddEvent({Key key}) : super(key: key);
@@ -13,11 +14,12 @@ class AddEvent extends StatefulWidget {
   _AddEventState createState() => _AddEventState();
 }
 
-class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin{
+class _AddEventState extends State<AddEvent>
+    with SingleTickerProviderStateMixin {
   double scale;
   AnimationController _animationController;
   bool isVisible = true;
-  String uid;
+  String uid, status;
   var sp;
 
   @override
@@ -25,23 +27,48 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     super.initState();
     getPreferences();
     _animationController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 200),
-      lowerBound: 0.0,
-      upperBound: 1.0
-    )..addListener(() { setState(() {}); });
+        vsync: this,
+        duration: Duration(milliseconds: 200),
+        lowerBound: 0.0,
+        upperBound: 1.0
+    )
+      ..addListener(() {
+        setState(() {});
+      });
   }
 
-  getPreferences() async{
+  getPreferences() async {
     sp = await Prefs().getPrefs();
     setState(() {
       uid = sp.getString('uid');
     });
-    Firestore.instance.collection('forms').document(uid).get().then((document){
-      if (document.exists){
-        setState(() => isVisible = false);
-      }
-    });
+    if (status == null) {
+      Firestore.instance.collection('forms').document(uid).get().then((
+          document) {
+        if (document.exists) {
+          if (document['Status'] == 'Approved') {
+            setState(() => status = 'Approved');
+            sp.setString('status', 'Approved');
+            print('get: ' + status);
+          }
+          else {
+            setState((){
+              isVisible = false;
+              status = 'Submitted';
+              sp.setString('status', 'Submitted');
+              print(status);
+            });
+          }
+        }
+      });
+    }
+    else{
+      setState((){
+        status = sp.getString('status');
+        isVisible = false;
+        print('set: ' + status);
+      });
+    }
   }
 
   @override
@@ -54,17 +81,24 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     _animationController.forward();
   }
 
-  void _onTapUp(TapUpDetails details) async{
+  void _onTapUpSub(TapUpDetails details) async {
     _animationController.reverse();
     String isChanged = await Navigator.push(context, MaterialPageRoute(
-      builder: (_) => Subscribe(uid: uid)
+        builder: (_) => Subscribe(uid: uid)
     ));
 
-    if (isChanged == 'true'){
+    if (isChanged == 'true') {
       setState(() {
         isVisible = false;
       });
     }
+  }
+
+  void _onTapUp(TapUpDetails details){
+    _animationController.reverse();
+    Navigator.push(context, MaterialPageRoute(
+        builder: (_) => TakeInfo()
+    ));
   }
 
   @override
@@ -74,13 +108,9 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
     return Scaffold(
       body: Stack(
         children: <Widget>[
-          Image.asset('images/event_back.jpg',
+          Image.asset('images/back1.jpg',
             fit: BoxFit.cover,
             height: double.infinity,
-          ),
-
-          Container(
-            color: Color.fromRGBO(0, 0, 0, 0.3),
           ),
 
           Column(
@@ -88,156 +118,244 @@ class _AddEventState extends State<AddEvent> with SingleTickerProviderStateMixin
               FadeIn(
                 delay: 1.33,
                 child: Container(
-                  padding: EdgeInsets.only(top: 70.0),
+                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.width / 2),
                   alignment: Alignment.topCenter,
-                  child: Image.asset('images/new_logo.png',
-                    width: 120.0,
-                    height: 120.0,
+                  child: Container(
+                    child: Image.asset('images/new_logo.png',
+                      width: 120.0,
+                      height: 120.0,
+                    ),
                   ),
                 ),
               ),
 
               Padding(
-                padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 5),
-                child: Stack(
-                  children: <Widget>[
-                    Visibility(
-                      visible: isVisible,
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 10.0),
-                        child: Column(
-                          children: <Widget>[
-                            FadeIn(
-                              delay: 1.66,
-                              child: RichText(
-                                text: TextSpan(
-                                    style: TextStyle(
-                                        fontSize: 20.0,
-                                        fontFamily: 'Product Sans'
-                                    ),
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                        text: 'Showcase your events on ',
-                                      ),
-                                      TextSpan(
-                                          text: 'Du Unify',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold
-                                          )
-                                      ),
-                                    ]
-                                ),
-                              ),
-                            ),
-
-                            FadeIn(
-                              delay: 2.0,
-                              child: Text('NOW!',
+                padding: EdgeInsets.only(top: MediaQuery
+                    .of(context)
+                    .size
+                    .height / 25),
+                child: status == 'Approved' ?
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        FadeIn(
+                          delay: 1.66,
+                          child: Padding(
+                            padding: EdgeInsets.only(bottom: 20.0),
+                            child: RichText(
+                              textAlign: TextAlign.center,
+                              text: TextSpan(
                                 style: TextStyle(
-                                    fontSize: 50.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white
+                                  fontFamily: 'Product Sans',
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                  fontSize: 20.0,
                                 ),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: 'Want to start adding events?'
+                                  ),
+//                                  TextSpan(
+//                                    text: 'NOW!',
+//                                    style: TextStyle(
+//                                      fontSize: 30.0,
+//                                      fontWeight: FontWeight.bold
+//                                    )
+//                                  ),
+                                ]
                               ),
                             ),
-
-                            Padding(
-                              padding: EdgeInsets.only(top: 30.0),
-                              child: FadeIn(
-                                delay: 2.2,
-                                child: GestureDetector(
-                                  onTapUp: _onTapUp,
-                                  onTapDown: _onTapDown,
-                                  child: Transform.scale(
-                                    scale: scale,
-                                    child: Container(
-                                      height: 50,
-                                      width: 200,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(100),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.white70.withOpacity(0.2),
-                                            blurRadius: 30.0,
-                                            offset: Offset(0.0, 30.0),
-                                          ),
-                                        ],
-                                        gradient: LinearGradient(
-                                            begin: Alignment.topLeft,
-                                            end: Alignment.bottomRight,
-                                            colors: [Color(0xffeecda3), Color(0xffef629f)],
-                                            stops: [0.4, 1.0]
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          'Subscribe',
-                                          style: TextStyle(
-                                            fontSize: 30,
-                                            fontWeight: FontWeight.w700,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
 
-                    Visibility(
-                      visible: !isVisible,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          FadeIn(
-                            delay: 1.33,
-                            child: Text('Thank you for your response 🙏',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.w600
+                        FadeIn(
+                          delay: 1.99,
+                          child: GestureDetector(
+                            onTapUp: _onTapUp,
+                            onTapDown: _onTapDown,
+                            child: Transform.scale(
+                              scale: scale,
+                              child: Container(
+                                height: 50,
+                                width: 200,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(
+                                      100),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.white70.withOpacity(
+                                          0.2),
+                                      blurRadius: 30.0,
+                                      offset: Offset(0.0, 30.0),
+                                    ),
+                                  ],
+                                  gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        Color(0xff434343),
+                                        Color(0xff000000)
+                                      ],
+                                      stops: [0.4, 1.0]
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'Tap here!',
+                                    style: TextStyle(
+                                      fontSize: 25,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-
-                          FadeIn(
-                            delay: 1.66,
-                            child: Container(
-                              padding: EdgeInsets.only(top: 100.0),
-                              child: RichText(
-                                textAlign: TextAlign.center,
-                                text: TextSpan(
-                                  style: TextStyle(
-                                    fontSize: 25.0,
-                                    fontFamily: 'Product Sans'
-                                  ),
-                                  children: [
-                                    TextSpan(
-                                      text: 'Our team will contact you within\n',
+                        )
+                      ],
+                    )
+                    :
+                    Stack(
+                      children: <Widget>[
+                        Visibility(
+                          visible: isVisible,
+                          child: Padding(
+                            padding: EdgeInsets.only(bottom: 10.0),
+                            child: Column(
+                              children: <Widget>[
+                                FadeIn(
+                                  delay: 1.66,
+                                  child: RichText(
+                                    textAlign: TextAlign.center,
+                                    text: TextSpan(
+                                        style: TextStyle(
+                                            fontSize: 20.0,
+                                            fontFamily: 'Product Sans',
+                                          color: Colors.black
+                                        ),
+                                        children: <TextSpan>[
+                                          TextSpan(
+                                            text: 'The DU Unify platform provides every society of DU to showcase their fest and events in an organized way.',
+                                          ),
+                                        ]
                                     ),
-
-                                    TextSpan(
-                                      text: '24 hours.',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold
-                                      )
-                                    )
-                                  ]
+                                  ),
                                 ),
-                              )
+
+                                Padding(
+                                  padding: EdgeInsets.only(top: 30.0),
+                                  child: FadeIn(
+                                    delay: 2.2,
+                                    child: GestureDetector(
+                                      onTapUp: _onTapUpSub,
+                                      onTapDown: _onTapDown,
+                                      child: Transform.scale(
+                                        scale: scale,
+                                        child: Container(
+                                          height: 50,
+                                          width: 200,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                                100),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.white70.withOpacity(
+                                                    0.2),
+                                                blurRadius: 30.0,
+                                                offset: Offset(0.0, 30.0),
+                                              ),
+                                            ],
+                                            gradient: LinearGradient(
+                                                begin: Alignment.topLeft,
+                                                end: Alignment.bottomRight,
+                                                colors: [
+                                                  Color(0xff434343),
+                                                  Color(0xff000000)
+                                                ],
+                                                stops: [0.4, 1.0]
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              'Subscribe now!',
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w700,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ],
                             ),
                           ),
-                        ],
-                      )
-                    )
-                  ],
-                ),
+                        ),
+
+                        Visibility(
+                            visible: !isVisible,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                FadeIn(
+                                  delay: 1.33,
+                                  child: Container(
+                                    padding: EdgeInsets.only(left: 10),
+                                    child: RichText(
+                                      textAlign: TextAlign.center,
+                                      text: TextSpan(
+                                          style: TextStyle(
+                                              fontSize: 18.0,
+                                              fontFamily: 'Product Sans',
+                                              color: Colors.black
+                                          ),
+                                          children: [
+                                            TextSpan(
+                                              text: 'Thank you for connecting with us. ',
+                                            ),
+                                          ]
+                                      ),
+                                    ),
+                                  )
+                                ),
+
+                                FadeIn(
+                                  delay: 1.66,
+                                  child: Container(
+                                      padding: EdgeInsets.only(top: 10.0),
+                                      child: RichText(
+                                        textAlign: TextAlign.center,
+                                        text: TextSpan(
+                                            style: TextStyle(
+                                              fontSize: 22.0,
+                                              fontFamily: 'Product Sans',
+                                              color: Colors.black
+                                            ),
+                                            children: [
+                                              TextSpan(
+                                                text: 'Our team shall contact you within\n24 hours.',
+                                              ),
+
+                                              TextSpan(
+                                                  text: ' Stay tuned.',
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight.bold
+                                                  )
+                                              )
+                                            ]
+                                        ),
+                                      )
+                                  ),
+                                ),
+                              ],
+                            )
+                        ),
+                      ],
+                    ),
               )
             ],
           ),

@@ -1,14 +1,15 @@
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../utils/app_bar.dart';
 
 class EventDetails extends StatefulWidget {
-  final String title, photoUrl1,photoUrl2, photoUrl3, photoUrl4, date, desc, venue, orgn, index;
+  final String title, photoUrl1,photoUrl2, photoUrl3, photoUrl4, date, desc, venue, orgn, index, link, fbLink, igLink;
   final bool isEventDet;
 
   EventDetails({
@@ -22,7 +23,10 @@ class EventDetails extends StatefulWidget {
     this.desc,
     this.venue,
     this.orgn,
-    this.isEventDet
+    this.isEventDet,
+    this.link,
+    this.fbLink,
+    this.igLink
   });
 
   @override
@@ -99,13 +103,13 @@ class _EventDetailsState extends State<EventDetails> with SingleTickerProviderSt
                   width: 70.0,
                   height: animatedHeight,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Color(0xff18d26e),
                     borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50), bottomRight: Radius.circular(50)),
-                    gradient: LinearGradient(
-                      colors: [Color(0xffED8F03), Color(0xffFFB75E)],
-                      begin: Alignment(0.0, 1.0),
-                      end: Alignment(1.0, 0.0),
-                    )
+//                    gradient: LinearGradient(
+//                      colors: [Color(0xffED8F03), Color(0xffFFB75E)],
+//                      begin: Alignment(0.0, 1.0),
+//                      end: Alignment(1.0, 0.0),
+//                    )
                   ),
                   child: Center(
                     child: Text(widget.date,
@@ -135,7 +139,7 @@ class _EventDetailsState extends State<EventDetails> with SingleTickerProviderSt
           ),
 
           Container(
-            margin: EdgeInsets.only(left: 5.0, right: 5.0, bottom: 20.0),
+            margin: EdgeInsets.only(left: 15.0, right: 15.0, bottom: 20.0),
             child: Text(widget.desc,
               style: TextStyle(
                 fontSize: 18.0
@@ -175,7 +179,7 @@ class _EventDetailsState extends State<EventDetails> with SingleTickerProviderSt
                 ),
 
                 Padding(
-                  padding: const EdgeInsets.only(top: 10.0, bottom: 15.0, right: 5.0),
+                  padding: const EdgeInsets.only(top: 10.0, bottom: 10.0, right: 5.0),
                   child: RichText(
                     text: TextSpan(
                         style: TextStyle(fontFamily: 'Product Sans'),
@@ -196,6 +200,48 @@ class _EventDetailsState extends State<EventDetails> with SingleTickerProviderSt
                     ),
                   ),
                 ),
+
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0, left: 30.0, right: 30.0),
+                  child: Divider(color: Colors.grey),
+                ),
+
+                Padding(
+                  padding: EdgeInsets.only(bottom: 15.0),
+                  child: Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(right: 30.0),
+                        child: Text('Social Media',
+                          style: TextStyle(
+                              fontSize: 32.0
+                          ),
+                        ),
+                      ),
+
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 16.0),
+                        child: IconButton(
+                          icon: Icon(FontAwesomeIcons.facebook, color: Color(0xFF4267B2), size: 50.0),
+                          onPressed: (){
+                            UrlLauncher.launch(widget.fbLink);
+                          },
+                        ),
+                      ),
+
+                      Padding(
+                        padding: EdgeInsets.only(left: 20.0, top: 25.0, bottom: 20.0),
+                        child: InkWell(
+                          onTap: () => UrlLauncher.launch(widget.igLink),
+                          child: Image.asset('images/ig_logo.png',
+                            width: 60.0,
+                            height: 60.0,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                )
               ],
             ),
           )
@@ -214,7 +260,7 @@ class _EventDetailsState extends State<EventDetails> with SingleTickerProviderSt
       floatingActionButton: FloatingActionButton.extended(
         elevation: 4.0,
         icon: Icon(Icons.event, color: Colors.white),
-        backgroundColor: Color(0xffFFB75E),
+        backgroundColor: Color(0xff18d26e),
         label: Text('Let\'s Join!',
           style: TextStyle(
             color: Colors.white,
@@ -222,7 +268,7 @@ class _EventDetailsState extends State<EventDetails> with SingleTickerProviderSt
             fontWeight: FontWeight.bold
           ),
         ),
-        onPressed: (){},
+        onPressed: () => UrlLauncher.launch(widget.link),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,

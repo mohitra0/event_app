@@ -1,21 +1,32 @@
 import 'dart:io';
 import 'dart:async';
-
-import 'file:///C:/Users/Lenovo/Documents/admin_app/lib/utils/background.dart';
-import 'package:admin_app/homepage/hompage.dart';
-import 'file:///C:/Users/Lenovo/Documents/admin_app/lib/utils/prefs.dart';
-import 'package:admin_app/transitions/slide_top_route.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:photo/photo.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
+
+import '../utils/background.dart';
+import '../utils/prefs.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class ImagePicker extends StatefulWidget {
-  final String name, desc;
+  final String name, desc, date, venue, category, formLink, igLink, fbLink;
 
-  ImagePicker({this.name, this.desc});
+  ImagePicker({
+    this.name,
+    this.desc,
+    this.igLink,
+    this.fbLink,
+    this.formLink,
+    this.venue,
+    this.date,
+    this.category
+  });
 
   @override
   _ImagePickerState createState() => _ImagePickerState();
@@ -23,15 +34,16 @@ class ImagePicker extends StatefulWidget {
 
 class _ImagePickerState extends State<ImagePicker> with LoadingDelegate{
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  String currentSelected = "", uname, URL = "";
+  String currentSelected = "", uname, URL = "", socName, eID;
   List images;
   bool loading = false;
-  var sp, imageDataPath = {};
+  var sp, imageDataPath = {}, uuid = Uuid();
 
   @override
   void initState() {
     super.initState();
     getPreferences();
+    eID = uuid.v1();
   }
 
   getPreferences() async{
@@ -44,11 +56,43 @@ class _ImagePickerState extends State<ImagePicker> with LoadingDelegate{
       await _addImages(File(pic), i);
       i++;
     }
-    setState(() => loading = false);
+    Firestore.instance.collection('events').document(eID).setData({
+      'Url1': imageDataPath['image1'],
+      'Url2': imageDataPath['image2'],
+      'Url3': imageDataPath['image3'],
+      'Url4': imageDataPath['image4'],
+      'Edate': widget.date,
+      'Edesc': widget.desc,
+      'Ename': widget.name,
+      'category': widget.category,
+      'createdAt': FieldValue.serverTimestamp(),
+      'fbLink': widget.fbLink,
+      'igLink': widget.igLink,
+      'formLink': widget.formLink,
+      'venue': widget.venue,
+      'searchKey': widget.name.substring(0, 1).toUpperCase(),
+      'likes': 0,
+      'liked_by': [],
+      'orgn': socName,
+      'eventID': eID
+    });
+    Firestore.instance.collection('siteEvents').document(eID).setData({
+      'date': Timestamp.fromDate(DateFormat('dd MMM yyyy').parse(widget.date)),
+      'createdAt': FieldValue.serverTimestamp(),
+      'category': widget.category,
+      'description': widget.desc,
+      'fbLink': widget.fbLink,
+      'igLink': widget.igLink,
+      'joinLink': widget.formLink,
+      'name': widget.name,
+      'organizer': socName,
+      'venue': widget.venue,
+      'image': imageDataPath['image1']
+    });
   }
 
   Future<Null> _addImages(File file, int i) async{
-    final StorageReference ref = FirebaseStorage.instance.ref().child('users/$uname/img${i+1}');
+    final StorageReference ref = FirebaseStorage.instance.ref().child('events/$eID/img${i+1}');
     StorageUploadTask task = ref.putFile(file);
 
     await task.onComplete.then((taskSnapShot) async{
@@ -133,24 +177,30 @@ class _ImagePickerState extends State<ImagePicker> with LoadingDelegate{
                     GestureDetector(
                       onTap: (){
                         uname = sp.getString('Uname');
-                        setState(() => loading = true);
+                        String uid = sp.getString('uid');
+                        int count = 0;
+
+                        Firestore.instance.collection('forms').document(uid).get().then((document){
+                          setState((){
+                            loading = true;
+                            socName = document['Society'];
+                          });
+                        });
+
                         if (images == null){
                           setState(() => loading = false);
                           Prefs().showInSnackBar('No images selected', scaffoldKey, context);
                         }
                         else{
                           uploadImages();
-                          Prefs().writeDB(widget.name, widget.desc, sp.getString('user'), uname);
-                          sp.setString('name', widget.name);
-                          sp.setString('desc', widget.desc);
-                          sp.setBool('isReg', true);
-
                           Timer(
                             Duration(seconds: 3),
                             (){
-                              Navigator.pushAndRemoveUntil(context,
-                                SlideTopRoute(page: HomePage()),
-                                (Route route) => false);
+                              setState(() => loading = false);
+                              Navigator.popUntil(context, (route){
+                                return count++ == 3;
+                              });
+                              Fluttertoast.showToast(msg: 'Your event has been added! (y)');
                             }
                           );
                         }
@@ -173,9 +223,8 @@ class _ImagePickerState extends State<ImagePicker> with LoadingDelegate{
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                                 colors: [
-                                  Color(0xFFFF9844),
-                                  Color(0xFFFE8853),
-                                  Color(0xFFFD7267),
+                                  Color(0xff434343),
+                                  Color(0xff000000),
                                 ]
                             ),
                           ),
@@ -208,13 +257,10 @@ class _ImagePickerState extends State<ImagePicker> with LoadingDelegate{
                   height: 50.0,
                   child: Row(
                     children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(left: 15.0, right: 10.0),
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF78EC6C)),
-                        ),
+                      SpinKitCircle(
+                        color: Colors.black87,
+                        size: 40.0,
                       ),
-
                       Text('Saving your preferences...',
                         style: TextStyle(
                           fontSize: 20.0,
@@ -237,7 +283,7 @@ class _ImagePickerState extends State<ImagePicker> with LoadingDelegate{
             _pickAsset(PickType.onlyImage);
             Fluttertoast.showToast(msg: currentSelected);
           },
-          backgroundColor: Color(0xFFFF9844),
+          backgroundColor: Color(0xff434343),
           icon: Icon(Icons.add_a_photo, color: Colors.white),
           label: Text('Add'),
         ),
@@ -274,7 +320,7 @@ class _ImagePickerState extends State<ImagePicker> with LoadingDelegate{
   void _pickAsset(PickType type, {List<AssetPathEntity> pathList})async{
     List<AssetEntity> imgList = await PhotoPicker.pickAsset(
       context: context,
-      themeColor: Color(0xFFFF9844),
+      themeColor: Color(0xff434343),
       textColor: Colors.white,
       padding: 1.0,
       dividerColor: Colors.grey,
@@ -288,7 +334,7 @@ class _ImagePickerState extends State<ImagePicker> with LoadingDelegate{
       checkBoxBuilderDelegate: DefaultCheckBoxBuilderDelegate(
         activeColor: Colors.white,
         unselectedColor: Colors.white,
-        checkColor: Color(0xFFFF9844)
+        checkColor: Color(0xff434343)
       ),
       loadingDelegate: this,
       badgeDelegate: DurationBadgeDelegate(),

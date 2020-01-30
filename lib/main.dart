@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:admin_app/homepage/hompage.dart';
 import 'package:admin_app/transitions/fade_in_builder.dart';
@@ -75,6 +76,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ScreenUtil().init(context);
 
     return Scaffold(
       backgroundColor: Colors.grey[300],
@@ -106,7 +108,6 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
 
             Image.asset('images/new_logo.png',
-              color: Colors.black,
               width: 100.0,
               height: 100.0,
             )

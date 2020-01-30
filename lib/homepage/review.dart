@@ -62,6 +62,8 @@ class _ReviewState extends State<Review> {
                       desc: document['Edesc'],
                       venue: document['venue'],
                       orgn: document['orgn'],
+                      fbLink: document['fbLink'],
+                      igLink: document['igLink'],
                     ) as Widget;
                   }).toList()..add(
                     Container(
@@ -78,7 +80,7 @@ class _ReviewState extends State<Review> {
 }
 
 class SingleTrendCard extends StatelessWidget {
-  final String photoUrl1, photoUrl2, photoUrl3, photoUrl4, title, date, venue, orgn, desc, index;
+  final String photoUrl1, photoUrl2, photoUrl3, photoUrl4, title, date, venue, orgn, desc, index, igLink, fbLink;
 
   SingleTrendCard({
     this.title,
@@ -91,6 +93,8 @@ class SingleTrendCard extends StatelessWidget {
     this.index,
     this.venue,
     this.orgn,
+    this.fbLink,
+    this.igLink
   });
 
   @override
@@ -115,6 +119,8 @@ class SingleTrendCard extends StatelessWidget {
                     date: date,
                     venue: venue,
                     orgn: orgn,
+                    fbLink: fbLink,
+                    igLink: igLink,
                   )
               )
           );

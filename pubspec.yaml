@@ -57,6 +57,21 @@ dev_dependencies:
   flushbar: ^1.9.1
   flutter_spinkit: ^4.1.1+1
   flappy_search_bar: ^1.5.2
+  url_launcher: ^5.4.1
+  expandable: ^4.0.2
+  flutter_fab_dialer: ^0.1.1
+  webview_flutter: ^0.3.19+5
+  flutter_launcher_icons: ^0.7.4
+  datetime_picker_formfield: ^1.0.0
+  uuid: ^2.0.4
+
+flutter_icons:
+  image_path: "images/android_icon.png"
+  adaptive_icon_background: "images/black_back.png"
+  adaptive_icon_foreground: "images/android_icon_transparent.png"
+  adaptive_icon_padding: true
+  android: true
+  ios: true
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

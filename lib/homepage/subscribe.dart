@@ -40,34 +40,34 @@ class _SubscribeState extends State<Subscribe> with SingleTickerProviderStateMix
         ),
         child: TextFormField(
           style: TextStyle(
-              color: Color(0xffef629f),
+              color: Color(0xff434343),
               fontSize: 15
           ),
           decoration: InputDecoration(
             errorBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Color(0xffef629f)),
+                borderSide: BorderSide(color: Color(0xff434343)),
                 borderRadius: BorderRadius.circular(10)
             ),
             focusedErrorBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Color(0xffef629f)),
+                borderSide: BorderSide(color: Color(0xff434343)),
                 borderRadius: BorderRadius.circular(10)
             ),
             enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Color(0xffef629f)),
+                borderSide: BorderSide(color: Color(0xff434343)),
                 borderRadius: BorderRadius.circular(10)
             ),
             focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Color(0xffef629f)),
+                borderSide: BorderSide(color: Color(0xff434343)),
                 borderRadius: BorderRadius.circular(10)
             ),
             labelText: label,
             labelStyle: TextStyle(
-                color: Color(0xffef629f)
+                color: Color(0xff434343)
             ),
-            fillColor: Color(0xffef629f),
+            fillColor: Color(0xff434343),
           ),
           keyboardType: label == 'Phone No' ? TextInputType.phone : TextInputType.text,
-          cursorColor: Color(0xffef629f),
+          cursorColor: Color(0xff434343),
           onSaved: (value){
             switch (label){
               case 'Name':
@@ -124,18 +124,18 @@ class _SubscribeState extends State<Subscribe> with SingleTickerProviderStateMix
                 ),
                 children: <TextSpan>[
                   TextSpan(
-                    text: 'Enter ',
+                    text: 'Enter details',
                     style: TextStyle(
                       color: Colors.white
                     ),
                   ),
 
-                  TextSpan(
-                    text: 'basic details',
-                    style: TextStyle(
-                      color: Colors.black54,
-                    ),
-                  ),
+//                  TextSpan(
+//                    text: 'ails',
+//                    style: TextStyle(
+//                      color: Color(0xff000000),
+//                    ),
+//                  ),
                 ]
               ),
             ),
@@ -164,8 +164,9 @@ class _SubscribeState extends State<Subscribe> with SingleTickerProviderStateMix
                             formKey.currentState.save();
                             setState(() => loading = true);
                             Firestore.instance.collection('forms').document(widget.uid).setData({
+                              'createdAt': FieldValue.serverTimestamp(),
                               'Name': name,
-                              'Name of society': socName,
+                              'Society': socName,
                               'College': college,
                               'Phone No': phNo,
                               'Email': email,
@@ -195,7 +196,7 @@ class _SubscribeState extends State<Subscribe> with SingleTickerProviderStateMix
                             gradient: LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
-                                colors: [Color(0xffeecda3), Color(0xffef629f)],
+                                colors: [Color(0xff434343), Color(0xff000000)],
                                 stops: [0.2, 1.0]
                             ),
                           ),
